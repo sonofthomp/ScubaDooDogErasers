@@ -1,2 +1,2 @@
 11/02/2022
-* Russell: updated design doc (~11:00 PM)
+* Russell: updated design doc for increased clarity (~11:00 PM)
