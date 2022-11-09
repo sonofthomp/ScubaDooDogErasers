@@ -19,5 +19,14 @@ Collaborative Storytelling Website
 
 russellG -- 2022-11-02 23:00
 --------------------------------------------------------------
- * updated design doc for increased clarity
+ * Updated design doc for increased clarity
+==============================================================
+
+gabrielT, russellG -- 2022-11-08 20:00
+--------------------------------------------------------------
+ * Added framework for app.py to include all routes in site map
+ * Wrote pseudocode for each route, to specify it's function and
+   give ourselves an outline to work off of
+ * Wrote QCC for technicalities we are unsure of
+ * Renamed some routes for further clarity
 ==============================================================
