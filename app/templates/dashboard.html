@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+
+<html>
+<body>
+	<p style="position: fixed; top: 0; left: 1vw;">
+		<a href="/">Home</a>
+	</p>
+	<br><br><br><br>
+	<center>
+		<h3>Stories you've edited:</h3>
+		<ul>
+		{% for story in stories %}
+			<li><a href="/view_story?id=PLACEHOLDER, figure this out later">story title placeholder</a></li>
+		{% endfor %}
+		</ul>
+	</center>
+</body>
+</html>
