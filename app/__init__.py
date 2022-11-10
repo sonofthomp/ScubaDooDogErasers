@@ -111,6 +111,11 @@ def landing_page():
     else:
         return render_template("landing_page.html")
 
+#@app.route('/logout', methods=["GET"])
+#def logout():
+#    session.pop("username", None)
+#    return redirect('/')
+
 @app.route('/login', methods=["POST"])
 def login():
 	# The login route. This is the route that the login form on the landing page sends the information to
@@ -137,7 +142,7 @@ def login():
     for tuple in users:
         if (username == tuple[0]):
             if (password == tuple[1]):
-                session[username] = [username]
+                session["username"] = [username]
                 return render_template("dashboard.html")
             else:
                 return render_template("landing_page.html", errorTextL="Invalid password")
@@ -191,6 +196,7 @@ def view_story():
 	lookup the sql row based on the story_id
 	return the content of the page
 	'''
+	return render_template('view_story.html')
 
 @app.route('/story_creation_form', methods=["GET"])
 def story_creation_form():
@@ -202,6 +208,7 @@ def story_creation_form():
 
 	return the content of the page
 	'''
+	return render_template('story_creation_form.html')
 
 @app.route('/submit_story', methods=["POST"])
 def submit_story():
@@ -215,6 +222,7 @@ def submit_story():
 
 	insert new row into sqlite database containing this new story
 	'''
+	return 'work in progress'
 
 @app.route('/story_editing_form', methods=["GET"])
 def story_editing_form():
@@ -225,6 +233,7 @@ def story_editing_form():
 
 	return the html form for editing the story
 	'''
+	return render_template('story_editing_form.html')
 
 @app.route('/submit_edit', methods=["POST"])
 def submit_edit():
@@ -237,6 +246,7 @@ def submit_edit():
 	overwrite what is in the sql database
 	QCC: do we have to commit the changes in sqlite?
 	'''
+	return 'work in progress'
 
 '''
 KAREN DONT WORRY ABOUT THIS THIS IS JUST NOTES FOR RUSSELL
