@@ -1,58 +1,182 @@
-from flask import Flask
+# <<<<<<< HEAD
+# from flask import Flask, render_template, session, request, redirect, url_for
+# import sqlite3
+#
+# app = Flask(__name__)
+#
+# app.secret_key = "AAAAA";
+#
+# eUser = ""
+# ePass = ""
+# # Database stuff
+# DB_FILE="data.db"
+# db = sqlite3.connect(DB_FILE) #open if file exists, otherwise create
+# c = db.cursor()               #facilitate db ops -- you will use cursor to trigger db events
+# # Setup database
+# c.execute("DROP TABLE IF EXISTS user_info;")
+# command = "CREATE TABLE user_info (username TEXT, password TEXT, stories_ids TEXT);"
+# c.execute(command)    # run SQL statement
+#
+#
+# @app.route('/', methods = ['GET', 'POST'])
+# def login():
+#     # print(session)
+#     if (not session):
+#         if (request.method == "POST"):
+#             global eUser
+#             eUser = request.form['user']
+#             global ePass
+#             ePass = request.form['pass']
+#
+#             command = "SELECT * FROM user_info;"
+#             c.execute(command)
+#             users = c.fetchall()
+#
+#             for tuple in users:
+#                 if (eUser == tuple[0] && ePass == tuple[1]):
+#                     print("good")
+#
+#
+#         #     if (request.form['user'] == username and request.form['pass'] == password):
+#         #         try:
+#         #             session[eUser] = [request.form["user"], request.form["pass"]]
+#         #         except KeyError:
+#         #             return render_template("login.html")
+#         #
+#         #         return render_template("response.html", username = session[eUser][0],
+#         #         password = session[eUser][1])
+#         #     elif request.form['user'] == username:
+#         #         return render_template("login.html", errorText="Password is invalid.")
+#         #     elif request.form['pass'] == password:
+#         #         return render_template("login.html", errorText="Username is invalid.")
+#         #     else:
+#         #         return render_template("login.html", errorText="Username and password is invalid.")
+#         # else:
+#         #     return render_template("login.html")
+#     else:
+#         return render_template("response.html", username = session  [eUser][0],
+#         password = session[eUser][1])
+#
+# @app.route('/login', methods=['GET', 'POST'])
+# def login():
+#
+#
+# @app.route('/logout', methods=['GET', 'POST'])
+# def logout():
+#     session.pop(eUser, None)
+#     return redirect('/')
+#
+# if (__name__ == "__main__"):
+#     app.debug = True
+#     app.run()
+# =======
+from flask import Flask, render_template, session, request, redirect, url_for
+import sqlite3
 
+############################# Database stuff #############################
+DB_FILE="data.db"
+db = sqlite3.connect(DB_FILE, check_same_thread=False) #open if file exists, otherwise create
+c = db.cursor()               #facilitate db ops -- you will use cursor to trigger db events
+# Setup database
+c.execute("DROP TABLE IF EXISTS user_info;")
+command = "CREATE TABLE user_info (username TEXT, password TEXT, stories_ids TEXT);"
+c.execute(command)    # run SQL statement
+
+# USEFUL FOR LATER
+# db.commit() #save changes
+# db.close()  #close database
+################################ App stuff ################################
 app = Flask(__name__)
+app.secret_key = "AAAAA";
 
 @app.route('/', methods=["GET"])
 def landing_page():
-	# If you’re logged in, then this is the dashboard. If you’re not logged in,
-	# then this is the landing page. It contains a logo and the login and signup
-	# forms. Contains a search box where you can type in the name of every
-	# article, and the server will return the content of the article via
-	# /view_page. Contains a “Create Story” button.
+# If you’re logged in, then this is the dashboard. If you’re not logged in,
+# then this is the landing page. It contains a logo and the login and signup
+# forms. Contains a search box where you can type in the name of every
+# article, and the server will return the content of the article via
+# /view_page. Contains a “Create Story” button.
 
-	'''
-	PSEUDOCODE:
+    '''
+    PSEUDOCODE:
 
-	if user is logged in:
-		return dashboard page
+    if user is logged in:
+    	return dashboard page
 
-	return landing_page
-	'''
+    return landing_page
+    '''
+    # session.pop()
+    if (session):
+        return render_template("dashboard.html")
+    else:
+        return render_template("landing_page.html")
 
 @app.route('/login', methods=["POST"])
 def login():
 	# The login route. This is the route that the login form on the landing page sends the information to
 
-	'''
-	PSEUDOCODE:
+    '''
+    PSEUDOCODE:
 
-	username = username from form
-	password = password from form
+    username = username from form
+    password = password from form
 
-	if it's in that database:
-		create a session
+    if it's in that database:
+    	create a session
 
-	else:
-		return an error page or something
-	'''
+    else:
+    	return an error page or something
+    '''
+    username = request.form['username']
+    password = request.form['password']
+
+    command = "SELECT * FROM user_info;"
+    c.execute(command)
+    users = c.fetchall()
+
+    for tuple in users:
+        if (username == tuple[0]):
+            if (password == tuple[1]):
+                session[username] = [username]
+                return render_template("dashboard.html")
+            else:
+                return render_template("landing_page.html", errorTextL="Invalid password")
+
+    return render_template("landing_page.html", errorTextL="Invalid username")
+
 
 @app.route('/signup', methods=["POST"])
 def signup():
 	# The signup route. This is the route that the signup form on the landing page sends the information to
 
-	'''
-	PSEUDOCODE:
+    '''
+    PSEUDOCODE:
 
-	username = username from form
-	password = password from form
+    username = username from form
+    password = password from form
 
-	if it's in that database:
-		return an error page
+    if it's in that database:
+    	return an error page
 
-	else:
-		enter row into sql table with appropriate information
-		log user in
-	'''
+    else:
+    	enter row into sql table with appropriate information
+    	log user in
+    '''
+    username = request.form["username"]
+    password = request.form["password"]
+
+    command = "SELECT * FROM user_info;"
+    c.execute(command)
+    users = c.fetchall()
+
+    for tuple in users:
+        if (username == tuple[0]):
+            return render_template("landing_page.html", errorTextS="Username already exists")
+
+    command = f"INSERT INTO user_info VALUES(\"{username}\", \"{password}\", \"\");"
+    c.execute(command)
+    db.commit()
+    return render_template("landing_page.html")
 
 @app.route('/view_story', methods=["GET"])
 def view_story():
