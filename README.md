@@ -6,7 +6,7 @@
  * Russell Goychayev -- Developer
  
 ### Description of website:
-Lorem ipsum dolor sit amet
+An interactive storytelling website
 
 ### Launch codes:
 Instructions (tested for ages 3 and up):
