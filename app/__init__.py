@@ -82,6 +82,11 @@ c.execute("DROP TABLE IF EXISTS user_info;")
 command = "CREATE TABLE user_info (username TEXT, password TEXT, stories_ids TEXT);"
 c.execute(command)    # run SQL statement
 
+#Set up story creation stuff
+c.execute("DROP TABLE IF EXISTS pages;")
+c.execute("create table pages(story_id int, title text, content text, edit_ids text)");
+
+
 # USEFUL FOR LATER
 # db.commit() #save changes
 # db.close()  #close database
@@ -97,91 +102,96 @@ def landing_page():
 # article, and the server will return the content of the article via
 # /view_page. Contains a “Create Story” button.
 
-    '''
-    PSEUDOCODE:
+	'''
+	PSEUDOCODE:
 
-    if user is logged in:
-    	return dashboard page
+	if user is logged in:
+		return dashboard page
 
-    return landing_page
-    '''
-    # session.pop()
-    if (session):
-        return render_template("dashboard.html")
-    else:
-        return render_template("landing_page.html")
+	return landing_page
+	'''
+	# session.pop()
 
-#@app.route('/logout', methods=["GET"])
-#def logout():
-#    session.pop("username", None)
-#    return redirect('/')
+	# command = "SELECT * FROM pages;"
+	# c.execute(command)
+	# temp = c.fetchall()
+	# print(temp)
+	if (session):
+		return render_template("dashboard.html")
+	else:
+		return render_template("landing_page.html")
+
+@app.route('/logout', methods=["GET"])
+def logout():
+   session.pop("username", None)
+   return redirect('/')
 
 @app.route('/login', methods=["POST"])
 def login():
 	# The login route. This is the route that the login form on the landing page sends the information to
 
-    '''
-    PSEUDOCODE:
+	'''
+	PSEUDOCODE:
 
-    username = username from form
-    password = password from form
+	username = username from form
+	password = password from form
 
-    if it's in that database:
-    	create a session
+	if it's in that database:
+		create a session
 
-    else:
-    	return an error page or something
-    '''
-    username = request.form['username']
-    password = request.form['password']
+	else:
+		return an error page or something
+	'''
+	username = request.form['username']
+	password = request.form['password']
 
-    command = "SELECT * FROM user_info;"
-    c.execute(command)
-    users = c.fetchall()
+	command = "SELECT * FROM user_info;"
+	c.execute(command)
+	users = c.fetchall()
 
-    for tuple in users:
-        if (username == tuple[0]):
-            if (password == tuple[1]):
-                session["username"] = [username]
-                return render_template("dashboard.html")
-            else:
-                return render_template("landing_page.html", errorTextL="Invalid password")
+	for tuple in users:
+		if (username == tuple[0]):
+			if (password == tuple[1]):
+				session["username"] = [username]
+				return render_template("dashboard.html")
+			else:
+				return render_template("landing_page.html", errorTextL="Invalid password")
 
-    return render_template("landing_page.html", errorTextL="Invalid username")
+	return render_template("landing_page.html", errorTextL="Invalid username")
 
 
 @app.route('/signup', methods=["POST"])
 def signup():
 	# The signup route. This is the route that the signup form on the landing page sends the information to
 
-    '''
-    PSEUDOCODE:
+	'''
+	PSEUDOCODE:
 
-    username = username from form
-    password = password from form
+	username = username from form
+	password = password from form
 
-    if it's in that database:
-    	return an error page
+	if it's in that database:
+		return an error page
 
-    else:
-    	enter row into sql table with appropriate information
-    	log user in
-    '''
-    username = request.form["username"]
-    password = request.form["password"]
+	else:
+		enter row into sql table with appropriate information
+		log user in
+	'''
+	username = request.form["username"]
+	password = request.form["password"]
 
-    command = "SELECT * FROM user_info;"
-    c.execute(command)
-    users = c.fetchall()
+	command = "SELECT * FROM user_info;"
+	c.execute(command)
+	users = c.fetchall()
 
-    for tuple in users:
-        if (username == tuple[0]):
-            return render_template("landing_page.html", errorTextS="Username already exists")
+	for tuple in users:
+		if (username == tuple[0]):
+			return render_template("landing_page.html", errorTextS="Username already exists")
 
-    command = f"INSERT INTO user_info VALUES(\"{username}\", \"{password}\", \"\");"
-    c.execute(command)
-    db.commit()
-    return render_template("landing_page.html")
+	command = f"INSERT INTO user_info VALUES(\"{username}\", \"{password}\", \"\");"
+	c.execute(command)
+	db.commit()
+	return render_template("landing_page.html")
 
 @app.route('/view_story', methods=["GET"])
 def view_story():
@@ -214,7 +224,9 @@ def story_creation_form():
 def submit_story():
 	# This creates the new article from the parameters provided from the form on /story_creation_form
 	# that sent the user to this route
-
+##Set up story creation stuff
+#c.execute("DROP TABLE IF EXISTS pages;")
+#c.execute("create table pages(story_id int, title text, content text, edit_ids text)");
 	'''
 	PSEUDOCODE:
 
@@ -222,7 +234,28 @@ def submit_story():
 
 	insert new row into sqlite database containing this new story
 	'''
-	return 'work in progress'
+	story_title = request.form["story_title"]
+	story_content = request.form["story_content"]
+
+	command = "SELECT COUNT(1) as x FROM pages"
+	story_id = c.execute(command).fetchone()[0]
+	# print(c.fetchall())
+# then run c.fetchone()
+
+	edit_ids = "123,456,789"
+	# story_id = magically generated number (global int counter?? )
+	c.execute(
+    f"""
+    INSERT INTO pages VALUES ('{story_id}', '{story_title}', '{story_content}', '{edit_ids}');
+ """
+)
+	db.commit()
+	print("successfully created sql stuff")
+	print(f"""
+    INSERT INTO pages VALUES ('{story_id}', '{story_title}', '{story_content}', '{edit_ids}');
+ """)
+	#redirect you to homepage. I might edit dashboard.html template so that you can receive a message of confirmation that your story was successfully created
+	return redirect('/')
 
 @app.route('/story_editing_form', methods=["GET"])
 def story_editing_form():
