@@ -5,14 +5,15 @@ import sqlite3
 DB_FILE="data.db"
 db = sqlite3.connect(DB_FILE, check_same_thread=False) #open if file exists, otherwise create
 c = db.cursor()               #facilitate db ops -- you will use cursor to trigger db events
+command = ""
 # Setup database
-c.execute("DROP TABLE IF EXISTS user_info;")
-command = "CREATE TABLE user_info (username TEXT, password TEXT, stories_ids TEXT);"
+# c.execute("DROP TABLE IF EXISTS user_info;")
+# command = "CREATE TABLE user_info (username TEXT, password TEXT, stories_ids TEXT);"
 c.execute(command)    # run SQL statement
 
 #Set up story creation stuff
-c.execute("DROP TABLE IF EXISTS pages;")
-c.execute("create table pages(story_id int, title text, content text, edit_ids text)");
+# c.execute("DROP TABLE IF EXISTS pages;")
+# c.execute("CREATE TABLE pages(story_id int, title text, content text, edit_ids text)");
 
 
 # USEFUL FOR LATER
@@ -45,7 +46,20 @@ def landing_page():
 	# temp = c.fetchall()
 	# print(temp)
 	if (session):
-		return render_template("dashboard.html")
+		command = f'SELECT stories_ids FROM user_info WHERE username="{session["username"][0]}"';
+		c.execute(command)
+		print(c.fetchall())
+		temp = c.fetchone()[0]
+		temp = temp.split(',')
+		stories = []
+		for id in temp:
+			command = f'SELECT title FROM pages WHERE story_id="{id}"'
+			c.execute(command)
+			title = c.fetchone()[0]
+
+			stories += [title, id]
+
+		return render_template("dashboard.html", stories=stories)
 	else:
 		return render_template("landing_page.html")
 

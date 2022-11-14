@@ -10,7 +10,7 @@
 		<h3>Stories you've edited:</h3>
 		<ul>
 		{% for story in stories %}
-			<li><a href="/view_story?id=PLACEHOLDER, figure this out later">story title placeholder</a></li>
+			<li><a href="/view_story?id={{story[1]}}"> {{story[0]}} </a></li>
 		{% endfor %}
 		</ul>
 		<p><a href="/story_creation_form">Create Story</a></p>
