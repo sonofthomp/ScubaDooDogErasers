@@ -58,13 +58,15 @@ def landing_page():
 		temp = c.fetchone()[0]
 		temp = temp.split(',')
 		stories = []
-		for id in temp:
-			if (id != ""):
-				command = f'SELECT title FROM pages WHERE story_id="{id}"'
-				c.execute(command)
-				title = c.fetchone()[0]
+		
+		if temp != ['']:
+			for id in temp:
+				if (id != ""):
+					command = f'SELECT title FROM pages WHERE story_id="{id}"'
+					c.execute(command)
+					title = c.fetchone()[0]
 
-				stories += [title, id]
+					stories.append([title, id])
 
 		return render_template("dashboard.html", stories=stories)
 	else:
@@ -200,14 +202,14 @@ def submit_story():
  """
 )
 
-	command = f'SELECT stories_ids FROM user_info WHERE username="{session["username"][0]}"'
-	c.execute(command)
-	temp = c.fetchone()[0]
-	temp = str(temp) + str(story_id) + ","
-
-	c.execute(f'UPDATE user_info SET stories_ids="{temp}" WHERE username="{session["username"][0]}"')
-
+	c.execute(f'SELECT stories_ids FROM user_info WHERE username="{session["username"][0]}"')
+	stories_ids = c.fetchone()[0]
+	stories_ids = stories_ids.split(',')
+	stories_ids.append(str(story_id))
+	stories_ids = ','.join(stories_ids)
+	c.execute(f'UPDATE user_info SET stories_ids = "{stories_ids}" WHERE username="{session["username"][0]}"')
 	db.commit()
+	
 	print("successfully created sql stuff")
 	print(f"""
     INSERT INTO pages VALUES ('{story_id}', '{story_title}', '{story_content}', '{edit_ids}');
