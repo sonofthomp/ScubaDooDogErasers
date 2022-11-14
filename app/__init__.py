@@ -46,18 +46,25 @@ def landing_page():
 	# temp = c.fetchall()
 	# print(temp)
 	if (session):
-		command = f'SELECT stories_ids FROM user_info WHERE username="{session["username"][0]}"';
-		c.execute(command)
+		c.execute("SELECT * FROM pages")
 		print(c.fetchall())
+		c.execute("SELECT * FROM user_info")
+		print(c.fetchall())
+
+		command = f'SELECT stories_ids FROM user_info WHERE username="{session["username"][0]}"';
+		# command = f'SELECT * FROM user_info WHERE username="{session["username"][0]}"'
+		c.execute(command)
+		# print(c.fetchone())
 		temp = c.fetchone()[0]
 		temp = temp.split(',')
 		stories = []
 		for id in temp:
-			command = f'SELECT title FROM pages WHERE story_id="{id}"'
-			c.execute(command)
-			title = c.fetchone()[0]
+			if (id != ""):
+				command = f'SELECT title FROM pages WHERE story_id="{id}"'
+				c.execute(command)
+				title = c.fetchone()[0]
 
-			stories += [title, id]
+				stories += [title, id]
 
 		return render_template("dashboard.html", stories=stories)
 	else:
@@ -95,7 +102,8 @@ def login():
 		if (username == tuple[0]):
 			if (password == tuple[1]):
 				session["username"] = [username]
-				return render_template("dashboard.html")
+				# return render_template("dashboard.html")
+				return redirect("/")
 			else:
 				return render_template("landing_page.html", errorTextL="Invalid password")
 
@@ -191,6 +199,14 @@ def submit_story():
     INSERT INTO pages VALUES ('{story_id}', '{story_title}', '{story_content}', '{edit_ids}');
  """
 )
+
+	command = f'SELECT stories_ids FROM user_info WHERE username="{session["username"][0]}"'
+	c.execute(command)
+	temp = c.fetchone()[0]
+	temp = str(temp) + str(story_id) + ","
+
+	c.execute(f'UPDATE user_info SET stories_ids="{temp}" WHERE username="{session["username"][0]}"')
+
 	db.commit()
 	print("successfully created sql stuff")
 	print(f"""
