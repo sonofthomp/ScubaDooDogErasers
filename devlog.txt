@@ -40,7 +40,26 @@ gabrielT -- 2022-11-09 23:00
    turn this into css files later.
 ==============================================================
 
+KarenS -- 2022-11-10 12:00
+--------------------------------------------------------------
+* Wrote signup and login functions.
+* Created databases (user_info and pages) and fixed thread
+  issues.
+* Sanitized database input.
+==============================================================
+
 russellG -- 2022-11-14 00:00
 --------------------------------------------------------------
- * Finished submit_story route and corresponding sql work 
+ * Finished submit_story route and corresponding sql work
+==============================================================
+
+KarenS -- 2022-11-14 16:00
+--------------------------------------------------------------
+* Debugged dashboard, users can now see the stories they've
+  contributed to (links).
+* Login redirects to '/' rather than rendering the dashboard
+  itself.
+* SQLite tables are created only if they don't exist.
+* Submit edit now appends the story id to the list of ids that
+  user has edited.
 ==============================================================
