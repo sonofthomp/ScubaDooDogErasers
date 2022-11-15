@@ -21,11 +21,12 @@ git clone https://github.com/sonofthomp/ScubaDooDogErasers.git
 python3 ScubaDooDogErasers/app/__init__.py
 ```
 
-4) Run the following command: ```py
+4) Run the following command:
+```py
 pip install -r ScubaDooDogErasers/requirements.txt
 ```
 
-5) An message will appear in your terminal if everything went correctly:
+5) A message like this will appear in your terminal if everything went correctly (the debugger PIN may be different; this is okay):
 ```
 * Serving Flask app '__init__'
  * Debug mode: on
