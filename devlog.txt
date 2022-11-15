@@ -78,3 +78,8 @@ gabrielT 2022-11-14 22:00
  * Created the catalog and it's accompanying CSS
  * Added Chapter counting system
 ==============================================================
+
+gabrielT 2022-11-15 07:59
+--------------------------------------------------------------
+ * Added new SQLite format and catalog to design.pdf
+==============================================================
