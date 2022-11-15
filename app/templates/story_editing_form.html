@@ -12,7 +12,8 @@
 			<br><br>
 			
 			<h3> New Chapter: Chapter {{ chapter }} </h3>
-			<textarea rows="15" cols="70" placeholder="Enter new content here..."></textarea>
+			<textarea name="content" rows="15" cols="70" placeholder="Enter new content here..."></textarea>
+			<input type="hidden" name="story_id" value="{{ id }}"></input>
 			<br><br>
 			<input type="submit" value="Submit">
 		</form>

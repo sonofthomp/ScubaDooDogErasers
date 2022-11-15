@@ -8,12 +8,12 @@ c = db.cursor()               #facilitate db ops -- you will use cursor to trigg
 command = ""
 # Setup database
 # c.execute("DROP TABLE IF EXISTS user_info;")
-command = "CREATE TABLE IF NOT EXISTS user_info (username TEXT, password TEXT, stories_ids TEXT);"
+# command = "CREATE TABLE user_info (username TEXT, password TEXT, stories_ids TEXT);"
 c.execute(command)    # run SQL statement
 
 #Set up story creation stuff
 # c.execute("DROP TABLE IF EXISTS pages;")
-c.execute("CREATE TABLE IF NOT EXISTS pages(story_id int, title text, content text, edit_ids text)");
+# c.execute("CREATE TABLE pages(story_id int, title text, content text, edit_ids text)");
 
 
 # USEFUL FOR LATER
@@ -25,35 +25,25 @@ app.secret_key = "AAAAA";
 
 @app.route('/', methods=["GET"])
 def landing_page():
-# If you’re logged in, then this is the dashboard. If you’re not logged in,
-# then this is the landing page. It contains a logo and the login and signup
-# forms. Contains a search box where you can type in the name of every
-# article, and the server will return the content of the article via
-# /view_page. Contains a “Create Story” button.
-
-	'''
-	PSEUDOCODE:
-
-	if user is logged in:
-		return dashboard page
-
-	return landing_page
-	'''
-	# session.pop()
-
 	if (session):
-		command = f'SELECT stories_ids FROM user_info WHERE username="{session["username"][0]}"';
-		c.execute(command)
-		temp = c.fetchone()[0]
+		c.execute("SELECT * FROM pages")
+		print(c.fetchall())
+		c.execute("SELECT * FROM user_info")
+		print(c.fetchall())
+
+		c.execute('SELECT stories_ids FROM user_info WHERE username=?', [session["username"][0]])
+		temp = c.fetchone()
+		temp = temp[0]
 		temp = temp.split(',')
 		stories = []
-		for id in temp:
-			if (id != ""):
-				command = f'SELECT title FROM pages WHERE story_id="{id}"'
-				c.execute(command)
-				title = c.fetchone()[0]
+		
+		if temp != ['']:
+			for id in temp:
+				if (id != ""):
+					c.execute('SELECT title FROM pages WHERE story_id=?', [id])
+					title = c.fetchone()[0]
 
-				stories += [title, id]
+					stories.append([title, id])
 
 		return render_template("dashboard.html", stories=stories)
 	else:
@@ -83,8 +73,7 @@ def login():
 	username = request.form['username']
 	password = request.form['password']
 
-	command = "SELECT * FROM user_info;"
-	c.execute(command)
+	c.execute("SELECT * FROM user_info")
 	users = c.fetchall()
 
 	for tuple in users:
@@ -119,16 +108,14 @@ def signup():
 	username = request.form["username"]
 	password = request.form["password"]
 
-	command = "SELECT * FROM user_info;"
-	c.execute(command)
+	c.execute("SELECT * FROM user_info")
 	users = c.fetchall()
 
 	for tuple in users:
 		if (username == tuple[0]):
 			return render_template("landing_page.html", errorTextS="Username already exists")
 
-	command = f"INSERT INTO user_info VALUES(\"{username}\", \"{password}\", \"\");"
-	c.execute(command)
+	c.execute('INSERT INTO user_info VALUES(?, ?, "")', [username, password])
 	db.commit()
 	return render_template("landing_page.html")
 
@@ -145,7 +132,17 @@ def view_story():
 	lookup the sql row based on the story_id
 	return the content of the page
 	'''
-	return render_template('view_story.html')
+
+	story_id = request.args['id']
+	c.execute("SELECT * FROM pages WHERE story_id = ?", [story_id])
+	page = c.fetchone()
+
+	title = page[1]
+	content = page[2].replace('\n', '<br>')
+	edit_ids = page[3]
+	chapter = len(edit_ids.split(','))
+
+	return render_template('view_story.html', story_title=title, authors='gabriel', chapter=chapter, content=content, id=story_id)
 
 @app.route('/story_creation_form', methods=["GET"])
 def story_creation_form():
@@ -176,31 +173,24 @@ def submit_story():
 	story_title = request.form["story_title"]
 	story_content = request.form["story_content"]
 
-	command = "SELECT COUNT(1) as x FROM pages"
-	story_id = c.execute(command).fetchone()[0]
+	story_id = c.execute("SELECT COUNT(1) as x FROM pages").fetchone()[0]
 	# print(c.fetchall())
 # then run c.fetchone()
 
 	edit_ids = "123,456,789"
 	# story_id = magically generated number (global int counter?? )
-	c.execute(
-    f"""
-    INSERT INTO pages VALUES ('{story_id}', '{story_title}', '{story_content}', '{edit_ids}');
- """
-)
+	c.execute("INSERT INTO pages VALUES (?, ?, ?, ?)", [story_id, story_title, story_content, edit_ids])
 
-	command = f'SELECT stories_ids FROM user_info WHERE username="{session["username"][0]}"'
-	c.execute(command)
-	temp = c.fetchone()[0]
-	temp = str(temp) + str(story_id) + ","
-
-	c.execute(f'UPDATE user_info SET stories_ids="{temp}" WHERE username="{session["username"][0]}"')
-
+	c.execute('SELECT stories_ids FROM user_info WHERE username = ?', [session["username"][0]])
+	stories_ids = c.fetchone()[0]
+	stories_ids = stories_ids.split(',')
+	stories_ids.append(str(story_id))
+	stories_ids = ','.join(stories_ids)
+	c.execute(f'UPDATE user_info SET stories_ids = ? WHERE username = ?', [stories_ids, session['username'][0]])
 	db.commit()
+	
 	print("successfully created sql stuff")
-	print(f"""
-    INSERT INTO pages VALUES ('{story_id}', '{story_title}', '{story_content}', '{edit_ids}');
- """)
+	print("INSERT INTO pages VALUES (?, ?, ?, ?)", [story_id, story_title, story_content, edit_ids])
 	#redirect you to homepage. I might edit dashboard.html template so that you can receive a message of confirmation that your story was successfully created
 	return redirect('/')
 
@@ -213,7 +203,16 @@ def story_editing_form():
 
 	return the html form for editing the story
 	'''
-	return render_template('story_editing_form.html')
+
+	story_id = request.args['id']
+	c.execute(f"SELECT * FROM pages WHERE story_id = ?", [story_id])
+	page = c.fetchone()
+
+	title = page[1]
+	edit_ids = page[3]
+	chapter = len(edit_ids.split(',')) + 1
+
+	return render_template('story_editing_form.html', chapter=chapter, story_title=title, id=story_id)
 
 @app.route('/submit_edit', methods=["POST"])
 def submit_edit():
@@ -226,7 +225,18 @@ def submit_edit():
 	overwrite what is in the sql database
 	QCC: do we have to commit the changes in sqlite?
 	'''
-	return 'work in progress'
+
+	content = request.form.get('content')
+	_id = request.form.get('story_id')
+	c.execute("UPDATE pages SET content = ? WHERE story_id = ?", (content, _id))
+
+	c.execute("SELECT stories_ids FROM user_info WHERE username = ?", [session['username'][0]])
+	stories_ids = c.fetchone()
+	print(f"Stories ids: {stories_ids}")
+	#c.execute("UPDATE user_info SET stories_ids = ? WHERE username = ?", [stories_ids, session['username'][0]])
+	db.commit()
+
+	return redirect(f'/view_story?id={_id}')
 
 '''
 KAREN DONT WORRY ABOUT THIS THIS IS JUST NOTES FOR RUSSELL
