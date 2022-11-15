@@ -16,17 +16,27 @@ Instructions (tested for ages 3 and up):
 git clone https://github.com/sonofthomp/ScubaDooDogErasers.git
 ```
 
-3) Enter the following command in your terminal:
-```py
-python3 ScubaDooDogErasers/app/__init__.py
-```
-
-4) Run the following command:
+3) Run the following command:
 ```py
 pip install -r ScubaDooDogErasers/requirements.txt
 ```
 
-5) A message like this will appear in your terminal if everything went correctly (the debugger PIN may be different; this is okay):
+4) Run the following command:
+```py
+cd app/
+```
+
+5) Run the following command:
+```py
+python3 setup.py
+```
+
+6) Enter the following command in your terminal:
+```py
+python3 __init__.py
+```
+
+7) A message like this will appear in your terminal if everything went correctly (the debugger PIN may be different; this is okay):
 ```
 * Serving Flask app '__init__'
  * Debug mode: on
