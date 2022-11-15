@@ -13,7 +13,7 @@ Instructions (tested for ages 3 and up):
 1) Install, create, and activate a virtual environment (see https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/ for instructions)
 2) Clone this repository by entering the following command in your terminal:
 ```
-git clone git@github.com:sonofthomp/ScubaDooDogErasers.git
+git clone https://github.com/sonofthomp/ScubaDooDogErasers.git
 ```
 
 3) Enter the following command in your terminal:
