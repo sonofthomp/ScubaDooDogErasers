@@ -8,12 +8,12 @@ c = db.cursor()               #facilitate db ops -- you will use cursor to trigg
 command = ""
 # Setup database
 # c.execute("DROP TABLE IF EXISTS user_info;")
-# command = "CREATE TABLE user_info (username TEXT, password TEXT, stories_ids TEXT);"
+command = "CREATE TABLE IF NOT EXISTS user_info (username TEXT, password TEXT, stories_ids TEXT);"
 c.execute(command)    # run SQL statement
 
 #Set up story creation stuff
 # c.execute("DROP TABLE IF EXISTS pages;")
-# c.execute("CREATE TABLE pages(story_id int, title text, content text, edit_ids text)");
+c.execute("CREATE TABLE IF NOT EXISTS pages(story_id int, title text, content text, edit_ids text)");
 
 
 # USEFUL FOR LATER
@@ -47,15 +47,13 @@ def landing_page():
 		temp = c.fetchone()[0]
 		temp = temp.split(',')
 		stories = []
-		
-		if temp != ['']:
-			for id in temp:
-				if (id != ""):
-					command = f'SELECT title FROM pages WHERE story_id="{id}"'
-					c.execute(command)
-					title = c.fetchone()[0]
+		for id in temp:
+			if (id != ""):
+				command = f'SELECT title FROM pages WHERE story_id="{id}"'
+				c.execute(command)
+				title = c.fetchone()[0]
 
-					stories.append([title, id])
+				stories += [title, id]
 
 		return render_template("dashboard.html", stories=stories)
 	else:
@@ -191,14 +189,14 @@ def submit_story():
  """
 )
 
-	c.execute(f'SELECT stories_ids FROM user_info WHERE username="{session["username"][0]}"')
-	stories_ids = c.fetchone()[0]
-	stories_ids = stories_ids.split(',')
-	stories_ids.append(str(story_id))
-	stories_ids = ','.join(stories_ids)
-	c.execute(f'UPDATE user_info SET stories_ids = "{stories_ids}" WHERE username="{session["username"][0]}"')
+	command = f'SELECT stories_ids FROM user_info WHERE username="{session["username"][0]}"'
+	c.execute(command)
+	temp = c.fetchone()[0]
+	temp = str(temp) + str(story_id) + ","
+
+	c.execute(f'UPDATE user_info SET stories_ids="{temp}" WHERE username="{session["username"][0]}"')
+
 	db.commit()
-	
 	print("successfully created sql stuff")
 	print(f"""
     INSERT INTO pages VALUES ('{story_id}', '{story_title}', '{story_content}', '{edit_ids}');
