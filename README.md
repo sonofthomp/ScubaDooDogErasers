@@ -1,4 +1,4 @@
-# p00_moveslowlyandfixthings by Scuba-Doo Dog Erasers
+# ScubaTales™ by Scuba-Doo Dog Erasers
 
 ### Roster:
  * Gabriel Thompson -- Project Manager
@@ -6,22 +6,26 @@
  * Russell Goychayev -- Developer
 
 ### Description of website:
-An interactive storytelling website
+ScubaTales™ is a storytelling website that allows users to write stories and contribute to others' stories. Users are not allowed to edit stories more than once, and are only allowed to view the latest update to the story
 
 ### Launch codes:
 Instructions (tested for ages 3 and up):
 1) Install, create, and activate a virtual environment (see https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/ for instructions)
 2) Clone this repository by entering the following command in your terminal:
-```
+```py
 git clone https://github.com/sonofthomp/ScubaDooDogErasers.git
 ```
 
 3) Enter the following command in your terminal:
-```
-python3 ScubaDooDogErasers/app/__init.py__
+```py
+python3 ScubaDooDogErasers/app/__init__.py
 ```
 
-4) An message will appear in your terminal if everything went correctly:
+4) Run the following command: ```py
+pip install -r ScubaDooDogErasers/requirements.txt
+```
+
+5) An message will appear in your terminal if everything went correctly:
 ```
 * Serving Flask app '__init__'
  * Debug mode: on
@@ -33,5 +37,3 @@ Press CTRL+C to quit
  * Debugger PIN: 656-066-970
  ```
 Note the IP Address (```127.0.0.1:5000```). Open your internet browser (Google Chrome, Safari, FireFox, etc) and enter this IP address in the search bar. You can now use the website
-
-# p00_moveslowlyandfixthings by Scuba-Doo Dog Erasers
