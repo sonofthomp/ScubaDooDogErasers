@@ -63,3 +63,17 @@ KarenS -- 2022-11-14 16:00
 * Submit edit now appends the story id to the list of ids that
   user has edited.
 ==============================================================
+
+gabrielT, russellG, karenS -- 2022-11-14 19:00
+--------------------------------------------------------------
+ * Fixed previously broken story editing mechanism (previously,
+   users could get away with editing a story multiple times
+ * Decided to stop keeping track of individual user edits
+==============================================================
+
+gabrielT 2022-11-14 22:00
+--------------------------------------------------------------
+ * Wrote CSS for every page
+ * Add page view counter functionality
+ * Created the catalog and it's accompanying CSS
+==============================================================
