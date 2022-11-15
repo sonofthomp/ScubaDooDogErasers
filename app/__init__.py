@@ -41,20 +41,9 @@ def landing_page():
 	'''
 	# session.pop()
 
-	# command = "SELECT * FROM pages;"
-	# c.execute(command)
-	# temp = c.fetchall()
-	# print(temp)
 	if (session):
-		c.execute("SELECT * FROM pages")
-		print(c.fetchall())
-		c.execute("SELECT * FROM user_info")
-		print(c.fetchall())
-
 		command = f'SELECT stories_ids FROM user_info WHERE username="{session["username"][0]}"';
-		# command = f'SELECT * FROM user_info WHERE username="{session["username"][0]}"'
 		c.execute(command)
-		# print(c.fetchone())
 		temp = c.fetchone()[0]
 		temp = temp.split(',')
 		stories = []
