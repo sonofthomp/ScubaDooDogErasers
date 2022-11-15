@@ -1,40 +1,111 @@
 <!DOCTYPE html>
 
 <html>
+
+<head>
+<style>
+	body {
+	background-color: rgb(163, 194, 218);
+}
+
+p, h2, span {
+	font-family: 'Arial', sans-serif;
+}
+
+.label {
+	font-size: 14px;
+}
+
+#scubablog {
+	font-size: 36px;
+	text-decoration: rgb(180, 195, 220) wavy underline;
+}
+
+/* CSS */
+.button-2 {
+  background-color: rgba(51, 151, 151, 0.35);
+  border-radius: 8px;
+  border-width: 0;
+  color: #333333;
+  cursor: pointer;
+  display: inline-block;
+  font-family: "Haas Grot Text R Web", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 10px;
+  list-style: none;
+  margin: 0;
+  padding: 10px 12px;
+  text-align: center;
+  transition: all 200ms;
+  vertical-align: baseline;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+#main-box {
+	border: 2px solid black;
+	border-radius: 20px;
+	background-color: #dfdfff;
+	width: 35vw;
+}
+
+input[type=text], input[type=password], select {
+  width: 100%;
+  padding: 4px 20px;
+  margin: 6px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+</style>
+</head>
+
 <body>
 	<br><br><br><br>
 	<center>
-		<h2>Rudimentary Storytelling Website <span style="font-size: 14px;">v0.0</span></h2>
-		<p>A project created by <i>Scuba-Doo Dog Erasers</i></p>
-		<p>Roster: Karen Shekyan, Gabriel Thompson, Russell Goychayev</p>
-		<br>
+		<div id="main-box">
+			<h2 id="scubablog"><i>ScubaTales™</i></h2>
+			<p>A project created by Team <i>Scuba-Doo Dog Erasers</i></p>
+			<p>Roster: Karen Shekyan, Gabriel Thompson, Russell Goychayev</p>
+			<br>
 
-		<table>
-			<tr>
-			<td>
-				<h2> Login </h2>
-				<p style="color:red;"> {{errorTextL}} </p>
-				<form action="/login" method="POST">
-					<label>Username</label><br>
-					<input type="text" name="username"></input><br>
-					<label>Password</label><br>
-					<input type="password" name="password"></input><br><br>
-					<input type="submit" value="Submit">
-				</form>
-			</td>
-			<td style="padding-left: 3vw;">
-				<h2> Signup </h2>
-				<p style="color:red;"> {{errorTextS}} </p>
-				<form action="/signup" method="POST">
-					<label>Username</label><br>
-					<input type="text" name="username"></input><br>
-					<label>Password</label><br>
-					<input type="password" name="password"></input><br><br>
-					<input type="submit" value="Submit">
-				</form>
-			</td>
-			</tr>
-		</table>
+			<table>
+				<tr>
+				<td>
+					<h2> Login </h2>
+					<p style="color:red;"> {{errorTextL}} </p>
+					<form action="/login" method="POST">
+						<label><span class="label">Username</span></label><br>
+						<input type="text" name="username"></input><br>
+						<label><span class="label">Password</span></label><br>
+						<input type="password" name="password"></input><br><br>
+						<input type="submit" value="Login" class="button-2" role="button"></input>
+					</form>
+				</td>
+				<td style="padding-left: 4vw;">
+					<h2> Signup </h2>
+					<p style="color:red;"> {{errorTextS}} </p>
+					<form action="/signup" method="POST">
+						<label><span class="label">Username</span></label><br>
+						<input type="text" name="username"></input><br>
+						<label><span class="label">Password</span></label><br>
+						<input type="password" name="password"></input><br><br>
+						<input type="submit" value="Signup" class="button-2" role="button"></input>
+					</form>
+				</td>
+				</tr>
+			</table>
+			<br>
+			<hr style="border: 1px dotted grey;">
+			<h2>About</h2>
+			<p style="width: 30vw;">ScubaTales™ is the best place on the internet to publish your stories and attract viewers! To use, simply sign up and log in, and then you'll be able to navigate our catalog of stories and contribute to any of them.</p>
+			<br>
+		</div>
+		<br><br>
 	</center>
 </body>
 </html>

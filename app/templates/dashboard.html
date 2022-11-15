@@ -1,25 +1,133 @@
 <!DOCTYPE html>
 
 <html>
+
+<head>
+<style>
+	body {
+	background-color: rgb(163, 194, 218);
+}
+
+p, h1, h2, h3, span {
+	font-family: 'Arial', sans-serif;
+}
+
+.label {
+	font-size: 14px;
+}
+
+#scubablog {
+	font-size: 36px;
+	text-decoration: rgb(180, 195, 220) wavy underline;
+}
+
+/* CSS */
+.button-2 {
+  background-color: rgba(51, 151, 151, 0.35);
+  border-radius: 8px;
+  border-width: 0;
+  color: #333333;
+  cursor: pointer;
+  display: inline-block;
+  font-family: "Haas Grot Text R Web", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 10px;
+  list-style: none;
+  margin: 0;
+  padding: 10px 12px;
+  text-align: center;
+  transition: all 200ms;
+  vertical-align: baseline;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+#main-box {
+	border: 2px solid black;
+	border-radius: 20px;
+	background-color: #dfdfff;
+	width: 50vw;
+}
+
+input[type=text], input[type=password], select {
+  width: 100%;
+  padding: 4px 20px;
+  margin: 6px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+table, tr, th {
+	border: 1px solid black;
+}
+
+table {
+	background-color: rgba(128, 128, 128, 0.15);
+}
+
+</style>
+</head>
+
 <body>
 	<p style="position: fixed; top: 0; left: 1vw;">
-		<a href="/">Home</a>, <a href="/logout">Logout</a>
+		<a href="/">Home</a> | <a href="/logout">Logout</a>
 	</p>
 	<br><br><br><br>
 	<center>
-		<h3>Stories you've edited:</h3>
-		<table style="border: 1px solid black;">
-			<tr>
-				<th>Title</th>
-			</tr>
-			{% for story in stories %}
-				<tr style="border: 1px solid black;">
-					<td style="border-top: 1px solid black; height: 50px;"><a href="/view_story?id={{story[1]}}"> {{story[0]}} </a></td>
+	<div id="main-box">
+		<center>
+			<br>
+			<h1 style="line-height: 1.5;">Stories you've edited:</h1>
+			<hr style="border: 1px dotted grey;">
+			<br><br>
+			<table style="border: 1px solid black;">
+				<tr>
+					<th style="width: 15vw"><h3>Title</h3></th>
+					<th style="width: 8vw"><h3>Number of Chapters</h3></th>
+					<th style="width: 8vw"><h3>View Count</h3></th>
 				</tr>
-			{% endfor %}
-		</table>
-		<p><a href="/story_creation_form">Create Story</a></p>
-		<p><a href="/catalog">Catalog</a></p>
+				{% if stories|length > 0 %}
+					{% for story in stories %}
+						<tr style="border: 1px solid black;">
+							<td>
+								<center><p>
+									<a href="/view_story?id={{story[1]}}"> {{story[0]}} </a>
+								</p></center>
+							</td>
+							<td>
+								<center><p>{{ story[3] }}</p></center>
+							</td>
+							<td>
+								<center><p>{{ story[2] }} views</p></center>
+							</td>
+						</tr>
+					{% endfor %}
+				{% else %}
+					<tr>
+						<td colspan="3">
+							<h3><center>No stories edited yet.</center></h3>
+						</td>
+					</tr>
+				{% endif %}
+			</table>
+			<br><br>
+			<hr style="border: 1px dotted grey;">
+			<br>
+			<a href="/story_creation_form">
+				<input type="submit" value="Create story" class="button-2" role="button"></input>
+			</a>
+			<br><br>
+			<a href="/catalog">
+				<input type="submit" value="Catalog" class="button-2" role="button"></input>
+			</a>
+			<br><br>
+		</center>
+	</div>
 	</center>
 </body>
 </html>

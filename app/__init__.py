@@ -41,10 +41,13 @@ def landing_page():
 		if temp != ['']:
 			for id in temp:
 				if (id != ""):
-					c.execute('SELECT title FROM pages WHERE story_id=?', [id])
-					title = c.fetchone()[0]
+					c.execute('SELECT * FROM pages WHERE story_id=?', [id])
+					page = c.fetchone()
+					title = page[1]
+					views = page[4]
+					chapter = page[3]
 
-					stories.append([title, id])
+					stories.append([title, id, views, chapter])
 
 		return render_template("dashboard.html", stories=stories, stories_ids=stories_ids)
 	else:
@@ -140,10 +143,14 @@ def view_story():
 
 	title = page[1]
 	content = page[2].replace('\n', '<br>')
-	edit_ids = page[3]
-	chapter = len(edit_ids.split(','))
+	page_views = page[4]
+	authors = page[5]
+	chapter = page[3]
 
-	return render_template('view_story.html', story_title=title, authors='gabriel', chapter=chapter, content=content, id=story_id)
+	c.execute("UPDATE pages SET views = ? WHERE story_id = ?", (page_views + 1, story_id))
+	db.commit()
+
+	return render_template('view_story.html', story_title=title, authors=authors, chapter=chapter, content=content, id=story_id, page_views=page_views+1)
 
 @app.route('/story_creation_form', methods=["GET"])
 def story_creation_form():
@@ -178,9 +185,8 @@ def submit_story():
 	# print(c.fetchall())
 # then run c.fetchone()
 
-	edit_ids = ""
 	# story_id = magically generated number (global int counter?? )
-	c.execute("INSERT INTO pages VALUES (?, ?, ?, ?)", [story_id, story_title, story_content, edit_ids])
+	c.execute("INSERT INTO pages VALUES (?, ?, ?, 1, 0, '')", [story_id, story_title, story_content])
 
 	c.execute('SELECT stories_ids FROM user_info WHERE username = ?', [session["username"][0]])
 	stories_ids = c.fetchone()[0]
@@ -191,7 +197,7 @@ def submit_story():
 	db.commit()
 	
 	print("successfully created sql stuff")
-	print("INSERT INTO pages VALUES (?, ?, ?, ?)", [story_id, story_title, story_content, edit_ids])
+	print("INSERT INTO pages VALUES (?, ?, ?, 1, 0, '')", [story_id, story_title, story_content])
 	#redirect you to homepage. I might edit dashboard.html template so that you can receive a message of confirmation that your story was successfully created
 	return redirect('/')
 
@@ -210,8 +216,7 @@ def story_editing_form():
 	page = c.fetchone()
 
 	title = page[1]
-	edit_ids = page[3]
-	chapter = len(edit_ids.split(',')) + 1
+	chapter = page[3]
 
 	return render_template('story_editing_form.html', chapter=chapter, story_title=title, id=story_id)
 
@@ -222,7 +227,7 @@ def catalog():
 	stories = []
 
 	for page in pages:
-		stories.append([page[1], page[0]])
+		stories.append([page[1], page[0], page[4], page[3]])
 
 	print(f"stories: {stories}")
 	return render_template("catalog.html", stories=stories)
@@ -250,10 +255,11 @@ def submit_edit():
 
 	# if the user has already edited this story
 	print(stories_ids, _id)
+
 	if str(_id) in stories_ids:
 		c.execute("SELECT * FROM pages WHERE story_id = ?", [_id])
 		story = c.fetchone()
-		chapter = len(story[3].split(','))
+		chapter = story[3]
 		content = story[2].replace('\n', '<br>')
 
 		# tell the user to fuck off
@@ -262,9 +268,10 @@ def submit_edit():
 	else:
 		stories_ids.append(str(_id))
 		c.execute("UPDATE user_info SET stories_ids = ? WHERE username = ?", [','.join(stories_ids), session['username'][0]])
+		c.execute("SELECT * FROM pages WHERE story_id = ?", (_id,))
+		chapters = int(c.fetchone()[3]) + 1
+		c.execute("UPDATE pages SET content = ?, chapters = ? WHERE story_id = ?", (content, chapters, _id))
 		db.commit()
-
-		c.execute("UPDATE pages SET content = ? WHERE story_id = ?", (content, _id))
 
 		return redirect(f'/view_story?id={_id}')
 

@@ -1,22 +1,109 @@
 <!DOCTYPE html>
 
 <html>
+
+<head>
+<style>
+	body {
+	background-color: rgb(163, 194, 218);
+}
+
+p, h1, h2, h3, span {
+	font-family: 'Arial', sans-serif;
+}
+
+.label {
+	font-size: 14px;
+}
+
+#scubablog {
+	font-size: 36px;
+	text-decoration: rgb(180, 195, 220) wavy underline;
+}
+
+/* CSS */
+.button-2 {
+  background-color: rgba(51, 151, 151, 0.55);
+  border-radius: 8px;
+  border-width: 0;
+  color: #333333;
+  cursor: pointer;
+  display: inline-block;
+  font-family: "Haas Grot Text R Web", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 10px;
+  list-style: none;
+  margin: 0;
+  padding: 10px 12px;
+  text-align: center;
+  transition: all 200ms;
+  vertical-align: baseline;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+#main-box {
+	border: 2px solid black;
+	border-radius: 20px;
+	background-color: #dfdfff;
+	width: 50vw;
+	box-shadow: 7px 7px darkgreen;
+}
+
+input[type=text], input[type=password], select {
+  width: 100%;
+  padding: 4px 20px;
+  margin: 6px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+table, tr, th {
+	border: 1px solid black;
+}
+
+table {
+	background-color: rgba(128, 128, 128, 0.15);
+}
+
+th {
+	width: 15vw;
+}
+
+td {
+	border-top: 1px solid black;
+}
+
+textarea {
+	font-family: 'Verdana';
+}
+</style>
+</head>
+
 <body>
 	<p style="position: fixed; top: 0; left: 1vw;">
 		<a href="/">Home</a>
 	</p>
 	<br><br><br><br>
 	<center>
-		<form action="/submit_edit" method="POST">
-			<h2>{{ story_title }}</h2>
-			<br><br>
-			
-			<h3> New Chapter: Chapter {{ chapter }} </h3>
-			<textarea name="content" rows="15" cols="70" placeholder="Enter new content here..."></textarea>
-			<input type="hidden" name="story_id" value="{{ id }}"></input>
-			<br><br>
-			<input type="submit" value="Submit">
-		</form>
+		<div id="main-box">
+			<form action="/submit_edit" method="POST">
+				<h2>{{ story_title }}</h2>
+				<br><br>
+				
+				<h3> New Chapter: Chapter {{ chapter }} </h3>
+				<textarea name="content" rows="15" cols="70" placeholder="Enter new content here..."></textarea>
+				<input type="hidden" name="story_id" value="{{ id }}"></input>
+				<br><br>
+				<input type="submit" value="Submit">
+			</form>
+			<br>
+		</div>
 	</center>
 </body>
 </html>
