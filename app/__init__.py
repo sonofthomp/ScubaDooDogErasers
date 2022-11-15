@@ -33,6 +33,7 @@ def landing_page():
 
 		c.execute('SELECT stories_ids FROM user_info WHERE username=?', [session["username"][0]])
 		temp = c.fetchone()
+		stories_ids = temp
 		temp = temp[0]
 		temp = temp.split(',')
 		stories = []
@@ -45,7 +46,7 @@ def landing_page():
 
 					stories.append([title, id])
 
-		return render_template("dashboard.html", stories=stories)
+		return render_template("dashboard.html", stories=stories, stories_ids=stories_ids)
 	else:
 		return render_template("landing_page.html")
 
@@ -177,7 +178,7 @@ def submit_story():
 	# print(c.fetchall())
 # then run c.fetchone()
 
-	edit_ids = "123,456,789"
+	edit_ids = ""
 	# story_id = magically generated number (global int counter?? )
 	c.execute("INSERT INTO pages VALUES (?, ?, ?, ?)", [story_id, story_title, story_content, edit_ids])
 
@@ -214,6 +215,18 @@ def story_editing_form():
 
 	return render_template('story_editing_form.html', chapter=chapter, story_title=title, id=story_id)
 
+@app.route('/catalog', methods=["GET"])
+def catalog():
+	c.execute("SELECT * FROM pages")
+	pages = c.fetchall()
+	stories = []
+
+	for page in pages:
+		stories.append([page[1], page[0]])
+
+	print(f"stories: {stories}")
+	return render_template("catalog.html", stories=stories)
+
 @app.route('/submit_edit', methods=["POST"])
 def submit_edit():
 	# Updates the database with the new story content
@@ -228,15 +241,32 @@ def submit_edit():
 
 	content = request.form.get('content')
 	_id = request.form.get('story_id')
-	c.execute("UPDATE pages SET content = ? WHERE story_id = ?", (content, _id))
 
 	c.execute("SELECT stories_ids FROM user_info WHERE username = ?", [session['username'][0]])
-	stories_ids = c.fetchone()
-	print(f"Stories ids: {stories_ids}")
-	#c.execute("UPDATE user_info SET stories_ids = ? WHERE username = ?", [stories_ids, session['username'][0]])
-	db.commit()
+	stories_ids = c.fetchone()[0]
+	stories_ids = stories_ids.split(',')
+	if stories_ids[0] == '':
+		stories_ids = stories_ids[1:]
 
-	return redirect(f'/view_story?id={_id}')
+	# if the user has already edited this story
+	print(stories_ids, _id)
+	if str(_id) in stories_ids:
+		c.execute("SELECT * FROM pages WHERE story_id = ?", [_id])
+		story = c.fetchone()
+		chapter = len(story[3].split(','))
+		content = story[2].replace('\n', '<br>')
+
+		# tell the user to fuck off
+		return render_template('view_story.html', story_title=story[1], authors='gabriel', chapter=chapter, content=content, id=_id, error='You cannot edit a story you have already edited')
+
+	else:
+		stories_ids.append(str(_id))
+		c.execute("UPDATE user_info SET stories_ids = ? WHERE username = ?", [','.join(stories_ids), session['username'][0]])
+		db.commit()
+
+		c.execute("UPDATE pages SET content = ? WHERE story_id = ?", (content, _id))
+
+		return redirect(f'/view_story?id={_id}')
 
 '''
 KAREN DONT WORRY ABOUT THIS THIS IS JUST NOTES FOR RUSSELL

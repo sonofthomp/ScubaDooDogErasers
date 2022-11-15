@@ -8,13 +8,13 @@
 	<br><br><br><br>
 	<center>
 		<h2>{{ story_title }}</h2>
-		<p>Authors: {{ authors }}</p>
 		<p><a href="/story_editing_form?id={{ id }}">Edit story</a></p>
+		<p style="color:red;"> {{error}} </p>
 		<br><br>
 		
 		<h3> Chapter {{ chapter }} </h3>
 		<p>
-			{{ content | safe}}
+			{{ content | safe }}
 		</p>
 	</center>
 </body>
