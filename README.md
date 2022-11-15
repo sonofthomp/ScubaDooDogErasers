@@ -10,7 +10,7 @@ An interactive storytelling website
 
 ### Launch codes:
 Instructions (tested for ages 3 and up):
-1) Install, create, and activate a virtual environment (see https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/)
+1) Install, create, and activate a virtual environment (see https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/ for instructions)
 2) Clone this repository by entering the following command in your terminal:
 ```
 git clone git@github.com:sonofthomp/ScubaDooDogErasers.git
